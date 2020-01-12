@@ -1,0 +1,12 @@
+[package]
+name = "rnet_serde_derive"
+version = "0.1.0"
+authors = ["gpoblon <gpoblon@student.42.fr>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "0.14.4"
+quote = "0.6.3"
