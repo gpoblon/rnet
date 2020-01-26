@@ -29,6 +29,7 @@ name = "client"
 version = "0.1.0"
 dependencies = [
  "rnet 0.1.0",
+ "rnet_payloads 0.1.0",
 ]
 
 [[package]]
@@ -102,6 +103,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "rnet_payloads"
+version = "0.1.0"
+dependencies = [
+ "bincode 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rnet_serde 0.1.0",
+ "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "rnet_serde"
 version = "0.1.0"
 dependencies = [
@@ -140,6 +150,7 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "rnet 0.1.0",
+ "rnet_payloads 0.1.0",
 ]
 
 [[package]]

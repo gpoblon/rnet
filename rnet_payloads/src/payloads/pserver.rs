@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: 2020 Gaëtan Poblon <gaetan.poblon@gmail.com>
+// payload example
 
 use super::RnetSerde;
 use serde::{Serialize, Deserialize};

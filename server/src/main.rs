@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2020 Gaëtan Poblon <gaetan.poblon@gmail.com>
 
 use rnet::*;
+use rnet_payloads::*;
 
 use std::thread;
 use std::time;

@@ -1,4 +1,5 @@
 use rnet::*;
+use rnet_payloads::*;
 
 use std::thread;
 use std::time;

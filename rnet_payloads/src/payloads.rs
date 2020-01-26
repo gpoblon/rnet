@@ -1,5 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: 2020 Gaëtan Poblon <gaetan.poblon@gmail.com>
+// update this file to add new handled structs from the payloads folder
 
 // The following derive macros are mandatory for any payload struct
 // #[derive(Default, Debug, Copy, Clone, Serialize, Deserialize, RnetSerde)]

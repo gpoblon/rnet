@@ -3,6 +3,10 @@
 
 pub use rnet_serde_derive::RnetSerde;
 
+mod rnet_serde_wrapper;
+pub use rnet_serde_wrapper::WRnetSerde;
+
+
 pub trait RnetSerde {
     fn new() -> Self;
     fn from_bytes<'de>(bytes: &'de [u8]) -> Self;

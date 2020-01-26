@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 rnet = { path = "../rnet" }
+rnet_payloads = { path = "../rnet_payloads" }

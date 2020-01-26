@@ -12,7 +12,7 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
     let ast: syn::DeriveInput = syn::parse(input).unwrap();
     let name = &ast.ident;
     let gen = quote! {
-        use crate::{ PayloadKind, Rnet };
+        use crate::{ PayloadKind, WRnetSerde };
 
         impl RnetSerde for #name {
             fn new() -> Self {
@@ -27,7 +27,7 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
             fn as_bytes(&self) -> Vec<u8>
             where Self: Serialize
             {
-                let payload = Rnet::new(self.clone(), PayloadKind::#name as u8);
+                let payload = WRnetSerde::new(self.clone(), PayloadKind::#name as u8);
                 bincode::serialize(&payload).expect("error: AsBytes from RnetSerde")
             }
 

@@ -1,5 +1,5 @@
 [package]
-name = "client"
+name = "rnet_payloads"
 version = "0.1.0"
 authors = ["gpoblon <gpoblon@student.42.fr>"]
 edition = "2018"
@@ -7,5 +7,6 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rnet = { path = "../rnet" }
-rnet_payloads = { path = "../rnet_payloads" }
+bincode = "1.2.1"
+serde = { version = "1.0", features = ["derive"] }
+rnet_serde = { path = "../rnet_serde" }
