@@ -12,23 +12,17 @@ pub use pclient::PClient;
 mod pserver;
 pub use pserver::PServer;
 
-// not in use for now but could be used to match payload index
+#[derive(Debug)]
 pub enum PayloadKind {
     PClient,
     PServer,
 }
 
-macro_rules! payload_deserializer {
-    ($payload_id:expr, $datagram:expr) => {
-        match $payload_id {
-            0 => PClient::action($datagram),
-            1 => PServer::action($datagram),
-            _ => panic!("unhandled payload")
-        };
-    }
-}
-
-pub fn action_dispatcher(payload_id: u8, datagram: &[u8]) {
-    println!("payload_id = {}", payload_id);
-    payload_deserializer!(payload_id, datagram);
+pub fn dispatcher(datagram: &[u8]) {
+    let pkind = datagram[0];
+    match pkind {
+        0 => PClient::action(datagram),
+        1 => PServer::action(datagram),
+        _ => panic!("unhandled payload")
+    };
 }

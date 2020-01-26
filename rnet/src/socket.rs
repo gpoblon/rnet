@@ -33,7 +33,7 @@ impl SocketConnection {
     }
 
     pub fn send<'de, P: RnetSerde>(&'de self, payload: P) -> io::Result<()> {
-        let size = self.socket.send(&payload.serialize()[..])?;
+        let size = self.socket.send(&payload.as_bytes()[..])?;
         if size > DATAGRAM_SIZE {                                                                                                                                                                                                 
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SError::msg(SErrorKind::DatagramTooLarge)))
         }
@@ -42,7 +42,6 @@ impl SocketConnection {
 
     pub fn recv(&self) -> io::Result<usize> {
         let size = self.socket.recv(&mut *self.datagram.borrow_mut())?;
-        // println!("payload: {:?}", self.datagram.borrow());
         if size > DATAGRAM_SIZE {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SError::msg(SErrorKind::DatagramTooLarge)))
         } else if size < 2 {
@@ -53,9 +52,5 @@ impl SocketConnection {
 
     pub fn get_datagram(&self) -> [u8; DATAGRAM_SIZE] {
         *self.datagram.borrow()
-    }
-
-    pub fn get_payload_id(&self) -> u8 {
-        self.datagram.borrow()[0]
     }
 }

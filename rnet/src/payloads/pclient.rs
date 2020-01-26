@@ -12,6 +12,15 @@ pub struct PClient {
     pub skill: SkillId,
 }
 
+impl PClient {
+    pub fn action(datagram: &[u8])
+    where Self: std::fmt::Debug + Sized
+    {
+        let ser: Self = Self::from_bytes(datagram);
+        println!("From PClient action: {:#?}", ser);
+    }
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
 pub enum SkillId {
     None,
