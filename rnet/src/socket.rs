@@ -15,6 +15,7 @@ use crate::err::{SError, SErrorKind};
 // TODO : lazy so it is not recreated every time
 // TODO give possibility to have a user defined size (<= 512). 
 const DATAGRAM_SIZE: usize = 512;
+const MIN_PACKET_SIZE: usize = 2; // tmp, wil grow : at least check sum + pkind...
 
 pub struct SocketConnection {
     datagram: RefCell<[u8; DATAGRAM_SIZE]>,
@@ -32,7 +33,7 @@ impl SocketConnection {
         })
     }
 
-    pub fn send<'de, P: RnetSerde>(&'de self, payload: P) -> io::Result<()> {
+    pub fn send<'de, P: RnetSerde>(&'de self, payload: &P) -> io::Result<()> {
         let size = self.socket.send(&payload.as_bytes()[..])?;
         if size > DATAGRAM_SIZE {                                                                                                                                                                                                 
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SError::msg(SErrorKind::DatagramTooLarge)))
@@ -44,7 +45,7 @@ impl SocketConnection {
         let size = self.socket.recv(&mut *self.datagram.borrow_mut())?;
         if size > DATAGRAM_SIZE {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SError::msg(SErrorKind::DatagramTooLarge)))
-        } else if size < 2 {
+        } else if size < MIN_PACKET_SIZE {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SError::msg(SErrorKind::DatagramTooSmall)))
         }
         Ok(size)

@@ -9,13 +9,13 @@ const PEER_ADDR: &str = "127.0.0.1:8079";
 
 fn main() {
     let sc = SocketConnection::new(PEER_ADDR, SERVER_ADDR, false).expect(SError::msg(SErrorKind::SocketConnection));
-    let mut client = PClient { state: 42, ..Default::default() };
-    let server = PServer::new();
+    let mut paction = PlayerAction { state: 42, ..Default::default() };
+    let pnew = PlayerNew { name: String::from("Faith"), ..Default::default() };
     loop {
         println!("sending...");
-        client.lookat += 1;
-        sc.send(client).unwrap();
-        sc.send(server).unwrap();
+        paction.lookat += 1;
+        sc.send(&paction).unwrap();
+        sc.send(&pnew).unwrap();
         thread::sleep(time::Duration::from_millis(500)); // frame_time. OW netcode is based on quantized 16ms, 7ms if tournament 
     };
 }

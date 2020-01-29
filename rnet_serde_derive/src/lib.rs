@@ -12,11 +12,13 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
     let ast: syn::DeriveInput = syn::parse(input).unwrap();
     let name = &ast.ident;
     let gen = quote! {
-        use crate::{ PayloadKind, WRnetSerde };
-
         impl RnetSerde for #name {
-            fn new() -> Self {
-                Default::default()
+            // fn new() -> Self {
+            //     Default::default()
+            // }
+
+            fn as_ref(&self) -> &Self {
+                &self
             }
 
             fn from_bytes<'de>(bytes: &'de [u8]) -> Self
@@ -27,15 +29,19 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
             fn as_bytes(&self) -> Vec<u8>
             where Self: Serialize
             {
-                let payload = WRnetSerde::new(self.clone(), PayloadKind::#name as u8);
+                let payload = WRnetSerde::new(self.as_ref(), PayloadKind::#name as u8);
                 bincode::serialize(&payload).expect("error: AsBytes from RnetSerde")
+            }
+
+            fn debug(&self) {
+                println!("(default){:?} received, content: {:?}", PayloadKind::#name, self);
             }
 
             fn action(datagram: &[u8])
             where Self: std::fmt::Debug + Sized
             {
                 let ser: Self = Self::from_bytes(datagram);
-                println!("(default){:?} received, content: {:#?}", PayloadKind::#name, ser);
+                ser.debug();
             }
         }
     };
