@@ -8,7 +8,7 @@ const SERVER_ADDR: &str = "127.0.0.1:8081";
 const PEER_ADDR: &str = "127.0.0.1:8079";
 
 fn main() {
-    let sc = SocketConnection::new(PEER_ADDR, SERVER_ADDR, false).expect(SError::msg(SErrorKind::SocketConnection));
+    let sc = SocketConnection::new(PEER_ADDR, SERVER_ADDR, false).expect(SocketError::msg(SocketErrorKind::SocketConnection));
     let mut paction = PlayerAction { state: 42, ..Default::default() };
     let pnew = PlayerNew { name: String::from("Faith"), ..Default::default() };
     loop {

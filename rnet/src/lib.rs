@@ -7,5 +7,5 @@ mod socket;
 pub use socket::SocketConnection;
 
 mod err;
-pub use err::{ SError, SErrorKind };
+pub use err::{ SocketError, SocketErrorKind };
 

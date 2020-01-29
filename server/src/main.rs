@@ -11,7 +11,7 @@ const SERVER_ADDR: &str = "127.0.0.1:8081";
 const PEER_ADDR: &str = "127.0.0.1:8079";
 
 fn main() {
-    let sc = SocketConnection::new(SERVER_ADDR, PEER_ADDR, false).expect(SError::msg(SErrorKind::SocketConnection));
+    let sc = SocketConnection::new(SERVER_ADDR, PEER_ADDR, false).expect(SocketError::msg(SocketErrorKind::SocketConnection));
     loop {
         match sc.recv() {
             Ok(_) => dispatcher(&sc.get_datagram()),

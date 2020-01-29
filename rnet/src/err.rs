@@ -6,7 +6,7 @@ use std::fmt;
 use colored::Colorize;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub enum SErrorKind {
+pub enum SocketErrorKind {
     DatagramTooLarge,
     DatagramTooSmall,
     PacketNotReceived,
@@ -16,23 +16,23 @@ pub enum SErrorKind {
     SocketConnection,
 }
 
-pub struct SError {
-    pub kind: SErrorKind,
+pub struct SocketError {
+    pub kind: SocketErrorKind,
 }
-impl SError {
-    pub fn msg(error_kind: SErrorKind) -> &'static str {
+impl SocketError {
+    pub fn msg(error_kind: SocketErrorKind) -> &'static str {
         match error_kind {
-            SErrorKind::DatagramTooLarge => "Datagram size is bigger than its container (DATAGRAM_SIZE)",
-            SErrorKind::DatagramTooSmall => "Datagram size is smaller than the required payload header size",
-            SErrorKind::PacketNotReceived => "Could not retrieve packet from peer (probably not connected)",
-            SErrorKind::PacketNotSent => "Failed to send packet to connected peer",
-            SErrorKind::SocketAddrFormat => "Unrecognized host address format",
-            SErrorKind::SocketBinding => "Failed to bind to address",
-            SErrorKind::SocketConnection => "Failed to connect to address",
+            SocketErrorKind::DatagramTooLarge => "Datagram size is bigger than its container (DATAGRAM_SIZE)",
+            SocketErrorKind::DatagramTooSmall => "Datagram size is smaller than the required payload header size",
+            SocketErrorKind::PacketNotReceived => "Could not retrieve packet from peer (probably not connected)",
+            SocketErrorKind::PacketNotSent => "Failed to send packet to connected peer",
+            SocketErrorKind::SocketAddrFormat => "Unrecognized host address format",
+            SocketErrorKind::SocketBinding => "Failed to bind to address",
+            SocketErrorKind::SocketConnection => "Failed to connect to address",
         }
     }
 }
-impl fmt::Display for SError {
+impl fmt::Display for SocketError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let message = Self::msg(self.kind);
         f.write_str(&format!(
