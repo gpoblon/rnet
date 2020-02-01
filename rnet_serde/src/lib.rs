@@ -4,13 +4,15 @@
 pub use rnet_serde_derive::RnetSerde;
 
 mod rnet_serde_wrapper;
-pub use rnet_serde_wrapper::WRnetSerde;
+pub use rnet_serde_wrapper::{WRnetSerde, WRnetHeader, WRnetVersion};
+
+pub use serde::{Serialize, Deserialize};
 
 pub trait RnetSerde {
     // fn new() -> Self; // maybe new should not be mandatory as it forces Default
     fn as_ref(&self) -> &Self;
-    fn from_bytes<'de>(bytes: &'de [u8]) -> Self;
-    fn as_bytes(&self) -> Vec<u8>;
+    fn payload_from_bytes<'de>(bytes: &'de [u8]) -> Self;
+    fn prepare(&self, version: [u8;3]) -> Vec<u8>;
     fn debug(&self);
     fn action(datagram: &[u8]);
 }

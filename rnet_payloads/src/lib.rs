@@ -1,4 +1,4 @@
-use rnet_serde::{ RnetSerde, WRnetSerde };
+use rnet_serde;
 
 mod payloads;
 pub use payloads::*;

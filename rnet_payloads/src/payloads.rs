@@ -3,8 +3,7 @@
 // The following derive macros are mandatory for any payload struct
 // #[derive(Default, Debug, Copy, Clone, Serialize, Deserialize, RnetSerde)]
 
-use super::{RnetSerde, WRnetSerde};
-use serde::{Serialize, Deserialize};
+use super::rnet_serde::*;
 
 mod player;
 pub use player::*;
@@ -21,12 +20,17 @@ pub enum PayloadKind {
     PlayerNew,
 }
 
-pub fn dispatcher(datagram: &[u8]) {
-    let pkind = datagram[0];
-    match pkind {
-        0 => RnetError::action(datagram),
-        1 => PlayerAction::action(datagram),
-        2 => PlayerNew::action(datagram),
-        _ => panic!("unhandled payload")
-    };
+pub fn dispatcher(datagram: &[u8], local_version: [u8;3]) {
+    let header = WRnetHeader::from(datagram);
+    let remote_version = header.version.as_slice();
+    if remote_version == local_version {
+        match header.payload_kind {
+            0 => RnetError::action(datagram),
+            1 => PlayerAction::action(datagram),
+            2 => PlayerNew::action(datagram),
+            _ => panic!("unhandled payload")
+        };
+    } else {
+        panic!("Payload is shipped with a different version ({:?}, expected {:?})", remote_version, local_version)
+    }
 }

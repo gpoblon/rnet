@@ -21,15 +21,16 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
                 &self
             }
 
-            fn from_bytes<'de>(bytes: &'de [u8]) -> Self
+            fn payload_from_bytes<'de>(bytes: &'de [u8]) -> Self
             where {
-                bincode::deserialize::<Self>(&bytes[1..]).expect("error: FromBytes from RnetSerde")
+                bincode::deserialize::<Self>(&bytes[4..]).expect("error: FromBytes from RnetSerde")
             }
 
-            fn as_bytes(&self) -> Vec<u8>
+            fn prepare(&self, version: [u8;3]) -> Vec<u8>
             where Self: Serialize
             {
-                let payload = WRnetSerde::new(self.as_ref(), PayloadKind::#name as u8);
+                // env!("CARGO_PKG_VERSION")
+                let payload = WRnetSerde::new(self.as_ref(), PayloadKind::#name as u8, version);
                 bincode::serialize(&payload).expect("error: AsBytes from RnetSerde")
             }
 
@@ -40,7 +41,7 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
             fn action(datagram: &[u8])
             where Self: std::fmt::Debug + Sized
             {
-                let ser: Self = Self::from_bytes(datagram);
+                let ser: Self = Self::payload_from_bytes(datagram);
                 ser.debug();
             }
         }

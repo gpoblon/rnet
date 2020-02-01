@@ -17,24 +17,43 @@ use crate::err::{SocketError, SocketErrorKind};
 const DATAGRAM_SIZE: usize = 512;
 const MIN_PACKET_SIZE: usize = 2; // tmp, wil grow : at least check sum + pkind...
 
+pub struct NetworkSetup<A: ToSocketAddrs> {
+    local_addr: A,
+    remote_addr: A,
+    pub packets_version: [u8;3]
+}
+
 pub struct SocketConnection {
     datagram: RefCell<[u8; DATAGRAM_SIZE]>,
     socket: UdpSocket,
+    packets_version: [u8;3]
 }
 
 impl SocketConnection {
-    pub fn new<A: ToSocketAddrs>(from_addr: A, to_addr: A, is_blocking: bool) -> io::Result<Self> {
-        let socket = UdpSocket::bind(from_addr)?;
-        socket.connect(&to_addr)?;
+    /// Contains data that should be stored elsewhere, and crypted
+    /// Storing these values serialized on a remote db synchronised with the server seems like a good way to do it
+    /// will later be an autonomous call to the server, `pub` attribute and parameters wil disappear
+    pub fn prepare<A: ToSocketAddrs>(local_addr: A, remote_addr: A, packets_version: [u8;3]) -> NetworkSetup<A> {
+        NetworkSetup {
+            local_addr,
+            remote_addr,
+            packets_version
+        }
+    }
+
+    pub fn new<A: ToSocketAddrs>(config: &NetworkSetup<A>, is_blocking: bool) -> io::Result<Self> {
+        let socket = UdpSocket::bind(&config.local_addr)?;
+        socket.connect(&config.remote_addr)?;
         socket.set_nonblocking(is_blocking)?;
         Ok(Self {
             datagram: RefCell::new([0; DATAGRAM_SIZE]),
             socket,
+            packets_version: config.packets_version
         })
     }
 
     pub fn send<'de, P: RnetSerde>(&'de self, payload: &P) -> io::Result<()> {
-        let size = self.socket.send(&payload.as_bytes()[..])?;
+        let size = self.socket.send(&payload.prepare(self.packets_version)[..])?;
         if size > DATAGRAM_SIZE {                                                                                                                                                                                                 
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SocketError::msg(SocketErrorKind::DatagramTooLarge)))
         }

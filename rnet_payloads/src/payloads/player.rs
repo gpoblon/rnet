@@ -16,7 +16,7 @@ impl PlayerAction {
     pub fn action(datagram: &[u8])
     where Self: std::fmt::Debug + Sized
     {
-        let ser: Self = Self::from_bytes(datagram);
+        let ser: Self = Self::payload_from_bytes(datagram);
         println!("From PlayerAction action: {:#?}", ser);
     }
 }
@@ -31,15 +31,15 @@ pub struct PlayerNew {
 }
 impl PlayerNew {
     fn save(&self) -> RnetResult<()> {
-        unimplemented!();
-        Err(RnetError::new(PayloadKind::PlayerNew, "save", "could not save character", true))
+        unimplemented!()
+        // Err(RnetError::new(PayloadKind::PlayerNew, "save", "could not save", true))
     }
 
     // action triggered when receiving a PlayerAction
     pub fn action(datagram: &[u8])
     where Self: std::fmt::Debug + Sized
     {
-        let player: Self = Self::from_bytes(datagram);
+        let player: Self = Self::payload_from_bytes(datagram);
         println!("From PlayerAction action: {:#?}", player);
         player.save();
     }
