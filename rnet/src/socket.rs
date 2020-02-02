@@ -7,6 +7,7 @@ use std::cell::RefCell;
 
 use crate::RnetSerde;
 use crate::err::{SocketError, SocketErrorKind};
+use std::sync::RwLock;
 
 // 512 is the minimum datagram size supposed to be handled by every support:
 // minimum reassembly buffer size is 576 for ipv4.
@@ -17,16 +18,18 @@ use crate::err::{SocketError, SocketErrorKind};
 const DATAGRAM_SIZE: usize = 512;
 const MIN_PACKET_SIZE: usize = 2; // tmp, wil grow : at least check sum + pkind...
 
+pub type PacketVersion = [u8; 3];
+
 pub struct NetworkSetup<A: ToSocketAddrs> {
     local_addr: A,
     remote_addr: A,
-    pub packets_version: [u8;3]
+    pub packets_version: PacketVersion
 }
 
 pub struct SocketConnection {
-    datagram: RefCell<[u8; DATAGRAM_SIZE]>,
+    datagram: RwLock<[u8; DATAGRAM_SIZE]>,
     socket: UdpSocket,
-    packets_version: [u8;3]
+    packets_version: PacketVersion
 }
 
 impl SocketConnection {
@@ -46,7 +49,7 @@ impl SocketConnection {
         socket.connect(&config.remote_addr)?;
         socket.set_nonblocking(is_blocking)?;
         Ok(Self {
-            datagram: RefCell::new([0; DATAGRAM_SIZE]),
+            datagram: RwLock::new([0; DATAGRAM_SIZE]),
             socket,
             packets_version: config.packets_version
         })
@@ -61,7 +64,7 @@ impl SocketConnection {
     }
 
     pub fn recv(&self) -> io::Result<usize> {
-        let size = self.socket.recv(&mut *self.datagram.borrow_mut())?;
+        let size = self.socket.recv(&mut *self.datagram.write().expect("could not get write access"))?;
         if size > DATAGRAM_SIZE {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SocketError::msg(SocketErrorKind::DatagramTooLarge)))
         } else if size < MIN_PACKET_SIZE {
@@ -71,6 +74,6 @@ impl SocketConnection {
     }
 
     pub fn get_datagram(&self) -> [u8; DATAGRAM_SIZE] {
-        *self.datagram.borrow()
+        *self.datagram.read().expect("could not get datagram")
     }
 }

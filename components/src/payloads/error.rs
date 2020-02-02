@@ -5,7 +5,7 @@ use super::*;
 pub struct RnetError {
     payload_kind: Option<PayloadKind>,
     context: String,
-    explanation: String,
+    pub explanation: String,
     pub is_recoverable: bool,
 }
 impl RnetError {
@@ -23,7 +23,7 @@ impl RnetError {
     {
         let ser: Self = Self::payload_from_bytes(datagram);
         ser.debug();
-        Ok(None)
+        Ok(())
     }
 }
 impl fmt::Display for RnetError {

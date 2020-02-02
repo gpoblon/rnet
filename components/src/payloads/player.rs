@@ -15,7 +15,7 @@ impl PlayerAction {
     {
         let ser: Self = Self::payload_from_bytes(datagram);
         ser.debug();
-        Ok(None)
+        Ok(())
     }
 }
 
@@ -38,7 +38,7 @@ impl PlayerNew {
             player.faction,
             player.role,
         );
-        println!("new player created: {:?}", character);
-        Ok(None)
+        println!("new player created: {:#?}", character);
+        Ok(())
     }
 }

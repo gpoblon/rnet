@@ -11,7 +11,7 @@ mod error;
 pub use error::RnetError;
 
 // not sent through network but is used as the standard Result return type for any payload
-pub type RnetResult = std::result::Result<Option<Vec<u8>>, RnetError>;
+pub type RnetResult = std::result::Result<(), RnetError>;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum PayloadKind {

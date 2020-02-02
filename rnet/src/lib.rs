@@ -4,7 +4,7 @@
 pub use rnet_serde::RnetSerde;
 
 mod socket;
-pub use socket::SocketConnection;
+pub use socket::{ SocketConnection, PacketVersion };
 
 mod err;
 pub use err::{ SocketError, SocketErrorKind };
