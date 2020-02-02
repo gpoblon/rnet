@@ -8,4 +8,5 @@ edition = "2018"
 
 [dependencies]
 rnet = { path = "../rnet" }
+async-std = "1.4.0"
 components = { path = "../components" }

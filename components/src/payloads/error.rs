@@ -4,8 +4,8 @@ use super::*;
 #[derive(Debug, Serialize, Deserialize, RnetSerde)]
 pub struct RnetError {
     payload_kind: Option<PayloadKind>,
-    context: String,
-    explanation: String,
+    pub context: String,
+    pub explanation: String,
     pub is_recoverable: bool,
 }
 impl RnetError {

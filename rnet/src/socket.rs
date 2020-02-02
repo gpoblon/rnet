@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // SPDX-FileCopyrightText: 2020 Gaëtan Poblon <gaetan.poblon@gmail.com>
-
 use std::io;
-use std::net::{UdpSocket, ToSocketAddrs};
+use async_std::net::{UdpSocket, ToSocketAddrs};
+use async_std::task::block_on;
 use std::cell::RefCell;
 
 use crate::RnetSerde;
@@ -41,10 +41,9 @@ impl SocketConnection {
         }
     }
 
-    pub fn new<A: ToSocketAddrs>(config: &NetworkSetup<A>, is_blocking: bool) -> io::Result<Self> {
-        let socket = UdpSocket::bind(&config.local_addr)?;
-        socket.connect(&config.remote_addr)?;
-        socket.set_nonblocking(is_blocking)?;
+    pub fn new<A: ToSocketAddrs>(config: &NetworkSetup<A>) -> io::Result<Self> {
+        let socket = block_on(UdpSocket::bind(&config.local_addr))?;
+        block_on(socket.connect(&config.remote_addr))?;
         Ok(Self {
             datagram: RefCell::new([0; DATAGRAM_SIZE]),
             socket,
@@ -52,16 +51,18 @@ impl SocketConnection {
         })
     }
 
-    pub fn send<'de, P: RnetSerde>(&'de self, payload: &P) -> io::Result<()> {
-        let size = self.socket.send(&payload.prepare(self.packets_version)[..])?;
+    pub async fn send<'de, P: RnetSerde>(&'de self, payload: &P) -> io::Result<()> {
+        let size = self.socket.send(&payload.prepare(self.packets_version)[..]).await?;
         if size > DATAGRAM_SIZE {                                                                                                                                                                                                 
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SocketError::msg(SocketErrorKind::DatagramTooLarge)))
         }
+        // println!("Packet Sent");
         Ok(())
     }
 
-    pub fn recv(&self) -> io::Result<usize> {
-        let size = self.socket.recv(&mut *self.datagram.borrow_mut())?;
+    pub async fn recv(&self) -> io::Result<usize> {
+        let size = self.socket.recv(&mut *self.datagram.borrow_mut()).await?;
+        // println!("Packet Received");
         if size > DATAGRAM_SIZE {
             return Err(io::Error::new(io::ErrorKind::UnexpectedEof, SocketError::msg(SocketErrorKind::DatagramTooLarge)))
         } else if size < MIN_PACKET_SIZE {

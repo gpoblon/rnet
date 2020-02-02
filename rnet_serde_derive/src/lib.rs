@@ -31,7 +31,7 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
             }
 
             fn debug(&self) {
-                println!("(default){:?} received, content: {:?}", PayloadKind::#name, self);
+                println!("(default){:?} received, content: {:#?}", PayloadKind::#name, self);
             }
         }
     };

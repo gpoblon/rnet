@@ -37,3 +37,13 @@ bincode = "X.X.X" // library crate
 components = { path = "../components" } // clone it and update it to handle more payloads
 ```
 Note: `rnet_payload` own git clone link soon(ish), for now : `svn export https://github.com/gpoblon/rnet/components`
+
+## TODO
+- Rnet: 
+Add several optional abilities like:
+Fragmentation
+Bufferization
+Ordering
+Multithreading capability
+TCP version
+(timestamp takes some bytes and cpu cycles but may be a simple solution for ordering, fragmentation, bufferization)

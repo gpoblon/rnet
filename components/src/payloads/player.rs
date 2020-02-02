@@ -38,7 +38,7 @@ impl PlayerNew {
             player.faction,
             player.role,
         );
-        println!("new player created: {:?}", character);
+        println!("new player created: {:#?}", character);
         Ok(None)
     }
 }

@@ -8,5 +8,6 @@ edition = "2018"
 
 # just remove ../ to split payloads for real tests
 [dependencies]
+async-std = "1.4.0"
 rnet = { path = "../rnet" }
 components = { path = "../components" }
