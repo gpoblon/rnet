@@ -44,7 +44,6 @@ impl WRnetHeader {
     }
 }
 
-
 #[derive(Serialize)]
 pub struct WRnetSerde<'src, P: RnetSerde> {
     pub header: WRnetHeader,

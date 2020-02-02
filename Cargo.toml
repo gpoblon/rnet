@@ -3,5 +3,5 @@ members = [
     "server",
     "client",
     "rnet",
-    "rnet_payloads"
+    "components"
 ]

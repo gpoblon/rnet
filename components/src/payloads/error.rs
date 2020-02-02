@@ -3,19 +3,27 @@ use super::*;
 
 #[derive(Debug, Serialize, Deserialize, RnetSerde)]
 pub struct RnetError {
-    payload_kind: PayloadKind,
+    payload_kind: Option<PayloadKind>,
     context: String,
     explanation: String,
     pub is_recoverable: bool,
 }
 impl RnetError {
-    pub fn new(payload_kind: PayloadKind, context: &str, explanation: &str, is_recoverable: bool) -> Self {
+    pub fn new(payload_kind: Option<PayloadKind>, context: &str, explanation: &str, is_recoverable: bool) -> Self {
         Self {
             payload_kind,
             context: context.to_owned(),
             explanation: explanation.to_owned(),
             is_recoverable,
         }
+    }
+
+    pub fn action(datagram: &[u8]) -> RnetResult
+    where Self: std::fmt::Debug + Sized
+    {
+        let ser: Self = Self::payload_from_bytes(datagram);
+        ser.debug();
+        Ok(None)
     }
 }
 impl fmt::Display for RnetError {

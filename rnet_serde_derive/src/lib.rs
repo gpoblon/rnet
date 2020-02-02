@@ -13,10 +13,6 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
     let name = &ast.ident;
     let gen = quote! {
         impl RnetSerde for #name {
-            // fn new() -> Self {
-            //     Default::default()
-            // }
-
             fn as_ref(&self) -> &Self {
                 &self
             }
@@ -36,13 +32,6 @@ pub fn rnet_serde_derive(input: TokenStream) -> TokenStream {
 
             fn debug(&self) {
                 println!("(default){:?} received, content: {:?}", PayloadKind::#name, self);
-            }
-
-            fn action(datagram: &[u8])
-            where Self: std::fmt::Debug + Sized
-            {
-                let ser: Self = Self::payload_from_bytes(datagram);
-                ser.debug();
             }
         }
     };

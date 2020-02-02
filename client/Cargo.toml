@@ -6,6 +6,7 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+# just remove ../ to split payloads for real tests
 [dependencies]
 rnet = { path = "../rnet" }
-rnet_payloads = { path = "../rnet_payloads" }
+components = { path = "../components" }

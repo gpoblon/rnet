@@ -1,5 +1,5 @@
 [package]
-name = "rnet_payloads"
+name = "components"
 version = "0.1.0"
 authors = ["gpoblon <gpoblon@student.42.fr>"]
 edition = "2018"

@@ -28,8 +28,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "client"
 version = "0.1.0"
 dependencies = [
+ "components 0.1.0",
  "rnet 0.1.0",
- "rnet_payloads 0.1.0",
 ]
 
 [[package]]
@@ -40,6 +40,15 @@ dependencies = [
  "atty 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "components"
+version = "0.1.0"
+dependencies = [
+ "bincode 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rnet_serde 0.1.0",
+ "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -103,15 +112,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rnet_payloads"
-version = "0.1.0"
-dependencies = [
- "bincode 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "rnet_serde 0.1.0",
- "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
 name = "rnet_serde"
 version = "0.1.0"
 dependencies = [
@@ -149,8 +149,8 @@ dependencies = [
 name = "server"
 version = "0.1.0"
 dependencies = [
+ "components 0.1.0",
  "rnet 0.1.0",
- "rnet_payloads 0.1.0",
 ]
 
 [[package]]

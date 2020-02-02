@@ -11,7 +11,7 @@ mod error;
 pub use error::RnetError;
 
 // not sent through network but is used as the standard Result return type for any payload
-pub type RnetResult<P> = std::result::Result<P, RnetError>;
+pub type RnetResult = std::result::Result<Option<Vec<u8>>, RnetError>;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum PayloadKind {
@@ -20,17 +20,20 @@ pub enum PayloadKind {
     PlayerNew,
 }
 
-pub fn dispatcher(datagram: &[u8], local_version: [u8;3]) {
+pub fn dispatcher(datagram: &[u8], local_version: [u8;3]) -> RnetResult {
     let header = WRnetHeader::from(datagram);
     let remote_version = header.version.as_slice();
     if remote_version == local_version {
-        match header.payload_kind {
+        return match header.payload_kind {
             0 => RnetError::action(datagram),
             1 => PlayerAction::action(datagram),
             2 => PlayerNew::action(datagram),
-            _ => panic!("unhandled payload")
-        };
+            _ => {
+                // actually this might mean that packet is corrupted and should end connection
+                Err(RnetError::new(None, "dispatcher", "Payload kind not recognized", true))
+            }
+        }
     } else {
-        panic!("Payload is shipped with a different version ({:?}, expected {:?})", remote_version, local_version)
+        Err(RnetError::new(None, "dispatcher", "Packet version differ, must end connection", false))
     }
 }
